@@ -46,79 +46,45 @@
             100% { transform: translateY(-30px) rotate(2deg); }
         }
 
-        /* ====== ПИКСЕЛЬНАЯ LSD-РАМКА ====== */
+        /* Нижняя бегущая строка */
         @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
-
-        .chaos-frame {
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            pointer-events: none;
-            z-index: 2;
-        }
-        .frame-strip {
-            position: absolute;
-            background: rgba(80, 0, 150, 0.8);
+        .bottom-strip {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 36px;
+            background: rgba(80, 0, 150, 0.9);
             overflow: hidden;
             white-space: nowrap;
             font-family: 'Press Start 2P', 'Courier New', monospace;
             font-size: 12px;
             font-weight: bold;
-            color: #39ff14; /* ядовито-зелёный */
+            color: #39ff14;
             text-shadow: 0 0 8px #ff6600, 0 0 16px #ff3300;
             letter-spacing: 4px;
-            opacity: 0.95;
             display: flex;
             align-items: center;
-            image-rendering: pixelated; /* пиксельный рендер */
-            -webkit-font-smoothing: none; /* убираем сглаживание */
+            z-index: 10;
+            pointer-events: none;
+            image-rendering: pixelated;
+            -webkit-font-smoothing: none;
             -moz-osx-font-smoothing: unset;
         }
-        .frame-top, .frame-bottom {
-            width: 100%;
-            height: 36px;
-            left: 0;
-        }
-        .frame-top { top: 0; }
-        .frame-bottom { bottom: 0; }
-        .frame-left, .frame-right {
-            width: 36px;
-            height: 100%;
-            top: 0;
-            flex-direction: column;
-            writing-mode: vertical-rl;
-            text-orientation: mixed;
-        }
-        .frame-left { left: 0; }
-        .frame-right { right: 0; }
-
-        /* Бегущие строки: ускоряем до 0.8s */
         .marquee-h {
             display: flex;
             gap: 60px;
-            animation: marqueeH 0.8s linear infinite;
-        }
-        .marquee-v {
-            display: flex;
-            flex-direction: column;
-            gap: 30px;
-            animation: marqueeV 0.8s linear infinite;
+            animation: marqueeH 0.6s linear infinite;
         }
         @keyframes marqueeH {
             0% { transform: translateX(0); }
             100% { transform: translateX(-50%); }
         }
-        @keyframes marqueeV {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(-50%); }
-        }
-
-        /* Эффект пиксельной ряби + blur */
-        .marquee-h span, .marquee-v span {
+        .marquee-h span {
             display: inline-block;
             filter: blur(1.5px) contrast(150%);
             image-rendering: pixelated;
         }
-        /* ================================== */
 
         .container {
             position: relative; z-index: 1; width: 100%; max-width: 850px;
@@ -127,15 +93,8 @@
             box-shadow: 0 0 30px var(--glow), 0 0 60px var(--secondary), inset 0 0 20px rgba(179, 0, 255, 0.3);
             padding: 30px; border-radius: 15px;
             animation: containerGlitch 3s infinite step-end;
-            margin: 44px 0;
+            margin-bottom: 50px;
         }
-        @media (max-width: 600px) {
-            .container { margin: 40px 0; }
-            .frame-strip { font-size: 8px; }
-            .frame-top, .frame-bottom { height: 28px; }
-            .frame-left, .frame-right { width: 28px; }
-        }
-
         @keyframes containerGlitch {
             0%, 100% { box-shadow: 0 0 30px var(--glow), 0 0 60px var(--secondary); }
             5% { box-shadow: 10px 0 40px var(--primary), -5px 0 50px var(--secondary); }
@@ -320,37 +279,18 @@
             .btn-secondary { width: 100%; justify-content: center; }
             .settings-panel { right: 10px; left: 10px; min-width: auto; }
             .switch-btn { flex-direction: row; gap: 4px; }
+            .bottom-strip { height: 28px; font-size: 8px; }
         }
     </style>
 </head>
 <body>
     <div class="floating-chaos"></div>
 
-    <!-- ПИКСЕЛЬНАЯ LSD-РАМКА -->
-    <div class="chaos-frame">
-        <div class="frame-strip frame-top">
-            <div class="marquee-h">
-                <span>MAKES CONINENTN GEREAT AGAGIN MMAKES CONENINENTN GEREAT AGAGIN </span>
-                <span>MAKES CONINENTN GEREAT AGAGIN MMAKES CONENINENTN GEREAT AGAGIN </span>
-            </div>
-        </div>
-        <div class="frame-strip frame-bottom">
-            <div class="marquee-h" style="animation-direction: reverse;">
-                <span>MAKES CONINENTN GEREAT AGAGIN MMAKES CONENINENTN GEREAT AGAGIN </span>
-                <span>MAKES CONINENTN GEREAT AGAGIN MMAKES CONENINENTN GEREAT AGAGIN </span>
-            </div>
-        </div>
-        <div class="frame-strip frame-left">
-            <div class="marquee-v">
-                <span>MAKES CONINENTN GEREAT AGAGIN MMAKES CONENINENTN </span>
-                <span>MAKES CONINENTN GEREAT AGAGIN MMAKES CONENINENTN </span>
-            </div>
-        </div>
-        <div class="frame-strip frame-right">
-            <div class="marquee-v" style="animation-direction: reverse;">
-                <span>MAKES CONINENTN GEREAT AGAGIN MMAKES CONENINENTN </span>
-                <span>MAKES CONINENTN GEREAT AGAGIN MMAKES CONENINENTN </span>
-            </div>
+    <!-- Нижняя бегущая строка -->
+    <div class="bottom-strip">
+        <div class="marquee-h">
+            <span>MAKES CONINENTN GEREAT AGAGIN MMAKES CONENINENTN GEREAT AGAGIN </span>
+            <span>MAKES CONINENTN GEREAT AGAGIN MMAKES CONENINENTN GEREAT AGAGIN </span>
         </div>
     </div>
 
@@ -396,10 +336,10 @@
         <div id="output"></div>
 
         <hr style="border-color: #4d0099; margin-top: 20px;">
-        <p style="text-align:center; font-size:12px;">XEPOM-переводчик v4.5. Бюджет: 0 ₽. <a href="https://github.com/SLONGVX/XEPOM" target="_blank">GitHub</a></p>
+        <p style="text-align:center; font-size:12px;">XEPOM-переводчик v5.0. Бюджет: 0 ₽. <a href="https://github.com/SLONGVX/XEPOM" target="_blank">GitHub</a></p>
     </div>
 
-    <!-- Модальное окно правил (без изменений) -->
+    <!-- Модальное окно правил с обновлённым мат-фильтром -->
     <div class="modal-overlay" id="rulesModal">
         <div class="modal-content">
             <button class="modal-close" onclick="closeRules()">&times;</button>
@@ -445,7 +385,7 @@
             </ul>
             <p><b>Прозвища:</b> Пятёрка / 5opka → ГНИЛОЙ БАРАН, ХанОв → КСАНАКС, ktotakops → ЫГЛЫСИК КОТОКОПС</p>
             <h3>8. Отношение к мату</h3>
-            <p>Полный запрет на корень «ху‑» (заменяется на ДИЧЬ). «Херня» допустимо редко. Разрешённые ругательства: СВОЛОЧЬ, ГОВНЮК, ГНИЛОЙ БАРАН, ВЕДЬМА. Для самочувствия: мне дряхло.</p>
+            <p>Полный запрет. Замены: «нахуй» → НАПРОЧЬ, «хуёво» и все формы (хуёвый, хуёвая…) → ДРЯХЛО / ДРЯХЛЫЙ…, «шлюха»/«шалава» и склонения → ВЕДЬМА, оскорбления («пидор», «хуила», «мудак», «хуесос», «пидрила» и аналоги) → ЧЁРТ. Остальной мат на «ху‑» → ДИЧЬ, «пизд‑» → ДРЯХЛОСТЬ, «еб‑» → ЧЁРТ, «бля‑» → БЛИН. Разрешённые ругательства: СВОЛОЧЬ, ГОВНЮК, ГНИЛОЙ БАРАН, ВЕДЬМА. Для самочувствия: мне дряхло.</p>
             <h3>9. Пунктуация</h3>
             <p>В конце предложений — слэши //// (2–5). Иногда гигантские разделители из десятков слэшей. Обязательный КАПС. Всё пишется ЗАГЛАВНЫМИ БУКВАМИ.</p>
             <p style="text-align:center; margin-top:20px; color:#b300ff;">–––<br>Создано фанатами XEPOMа на основе реальной речи.</p>
@@ -495,7 +435,7 @@
             if (e.target === this) closeRules();
         });
 
-        // ========== УСИЛЕННЫЕ СЛОВАРИ ==========
+        // ========== СЛОВАРИ ==========
         const LEXICON = {
             'говорить': 'кумекать', 'разговаривать': 'кумекать', 'болтать': 'кумекать',
             'женщина': 'ведьма', 'женщины': 'ведьма', 'женщине': 'ведьма', 'женщину': 'ведьма',
@@ -508,15 +448,39 @@
             'фрикленд': 'фрактальный ленд',
         };
 
+        // Мат-фильтр с исправленной обработкой кириллицы
         const MAT_PATTERNS = [
-            { regex: /\bнаху[йя]\w*/gi, replacement: 'дичь' },
+            // нахуй → напрочь
+            { regex: /\bнаху[йя]\w*/gi, replacement: 'напрочь' },
             { regex: /\bпоху[йя]\w*/gi, replacement: 'дичь' },
-            { regex: /\bху[йёяеию]\w*/gi, replacement: 'дичь' },
+
+            // оскорбления → чёрт
+            { regex: /\bпидор\w*/gi, replacement: 'чёрт' },
+            { regex: /\bпидрил\w*/gi, replacement: 'чёрт' },
+            { regex: /\bхуил\w*/gi, replacement: 'чёрт' },
+            { regex: /\bмудак\w*/gi, replacement: 'чёрт' },
+            { regex: /\bхуесос\w*/gi, replacement: 'чёрт' },
+
+            // шлюха / шалава → ведьма
+            { regex: /\bшлюх\w*/gi, replacement: 'ведьма' },
+            { regex: /\bшалав\w*/gi, replacement: 'ведьма' },
+
+            // хуёво и склонения – на всякий случай прямые замены основных форм
+            { regex: /\bхуёво\b/gi, replacement: 'дряхло' },
+            { regex: /\bхуёвый\b/gi, replacement: 'дряхлый' },
+            { regex: /\bхуёвая\b/gi, replacement: 'дряхлая' },
+            { regex: /\bхуёвое\b/gi, replacement: 'дряхлое' },
+            { regex: /\bхуёвые\b/gi, replacement: 'дряхлые' },
+
+            // остальные ху- (кроме хуёв-) → дичь
+            { regex: /\bху[йёяеию](?!в)\w*/gi, replacement: 'дичь' },
             { regex: /\bниху[йя]\w*/gi, replacement: 'дичь' },
             { regex: /\bнеху[йя]\w*/gi, replacement: 'дичь' },
             { regex: /\bдоху[йя]\w*/gi, replacement: 'дичь' },
             { regex: /\bзаху[йя]\w*/gi, replacement: 'дичь' },
             { regex: /\bподху[йя]\w*/gi, replacement: 'дичь' },
+
+            // прочий мат
             { regex: /\bпизд\w*/gi, replacement: 'дряхлость' },
             { regex: /\bеб[ауёие]\w*/gi, replacement: 'чёрт' },
             { regex: /\bбля(дь|дская|дство)\w*/gi, replacement: 'блин' },
@@ -554,9 +518,9 @@
             'картонки': 'крартонки', 'друг': 'дуруг',
         };
 
-        function replaceMat(text) {
-            MAT_PATTERNS.forEach(({regex, replacement}) => { text = text.replace(regex, replacement); });
-            return text;
+        function replaceMat(word) {
+            MAT_PATTERNS.forEach(({regex, replacement}) => { word = word.replace(regex, replacement); });
+            return word;
         }
 
         function applyLexicalReplacements(word) {
@@ -639,7 +603,11 @@
         }
 
         function processWord(word, chaosFactor, chaosLevel) {
-            word = replaceMat(word);
+            word = replaceMat(word);                     // мат-фильтр
+            // Особая замена хуёв- → дряхл- с сохранением окончания (теперь с поддержкой кириллицы)
+            if (/^хуёв[а-яё]*$/i.test(word)) {
+                word = word.replace(/^хуёв/i, 'дряхл');
+            }
             word = applyLexicalReplacements(word);
             word = applyPhoneticRules(word, chaosFactor);
             word = addPostfix(word, chaosFactor);
