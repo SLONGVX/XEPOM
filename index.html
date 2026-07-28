@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XEPOM Переводчик</title>
+    <style>
+        body {
+            background: #1a1a1a;
+            color: #e0e0e0;
+            font-family: monospace;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 10px;
+        }
+        textarea {
+            width: 100%;
+            height: 200px;
+            background: #2d2d2d;
+            color: #ffcc00;
+            border: 1px solid #555;
+            padding: 10px;
+            font-family: monospace;
+            font-size: 14px;
+            resize: vertical;
+        }
+        #output {
+            background: #2d2d2d;
+            color: #ffcc00;
+            padding: 15px;
+            white-space: pre-wrap;
+            min-height: 150px;
+            margin: 10px 0;
+            border: 1px solid #555;
+            font-size: 14px;
+        }
+        button {
+            background: #555;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            margin: 5px;
+            cursor: pointer;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        button:hover { background: #777; }
+        .controls { margin: 10px 0; }
+        label { display: block; margin: 5px 0; }
+        input[type="range"] { width: 150px; }
+        a { color: #aaa; }
+    </style>
+</head>
+<body>
+    <h1>XEPOM-ПЕРЕВОДЧИК</h1>
+    <p>Введи или вставь текст (можно многострочный).<br>
+    <small>Для отправки нажми <b>Перевести</b> или Ctrl+Enter.</small></p>
+    <textarea id="input" placeholder="Твой текст..."></textarea>
+    <div class="controls">
+        <button onclick="translateText()">ПЕРЕВЕСТИ</button>
+        <button onclick="copyOutput()">КОПИРОВАТЬ</button>
+        <button onclick="saveOutput()">СОХРАНИТЬ .TXT</button>
+    </div>
+    <div id="output"></div>
+
+    <details>
+        <summary>⚙️ Настройки хаоса</summary>
+        <label>Шанс разделителя (0-1): <input type="range" id="chaosChance" min="0" max="1" step="0.05" value="0.3"></label>
+        <label>Мин. слэшей: <input type="number" id="slashMin" value="5" min="1" max="100"></label>
+        <label>Макс. слэшей: <input type="number" id="slashMax" value="70" min="1" max="200"></label>
+    </details>
+
+    <hr>
+    <p><small>XEPOM-переводчик v3.0 (веб). Бюджет: 0 ₽. <a href="https://github.com">GitHub Pages</a></small></p>
+
+    <script>
+        // ==================== СЛОВАРИ (те же, что в Python) ====================
+        const LEXICON = {
+            'говорить': 'кумекать', 'разговаривать': 'кумекать', 'болтать': 'кумекать',
+            'женщина': 'ведьма', 'шутка': 'хохма', 'юмор': 'хохма',
+            'плохо': 'дряхло', 'плохой': 'дряхлый', 'сволочь': 'сволочь',
+            'секс': 'идиллия', 'ругаться': 'чертыхаться',
+            'моки миоки': 'маки маки', 'моки': 'маки', 'миоки': 'маки',
+            'фрикленд': 'фрактальный ленд',
+        };
+
+        const MAT_PATTERNS = [
+            { regex: /\bху[йёяеи]\w*/gi, replacement: 'дичь' },
+            { regex: /\bпизд\w*/gi, replacement: 'дряхлость' },
+            { regex: /\bеба(ть|л|н)\w*/gi, replacement: 'чёрт' },
+            { regex: /\bбля(дь|дская|дство)\w*/gi, replacement: 'блин' },
+        ];
+
+        const NICKNAMES = {
+            'пятёрка': 'гнилой баран', 'пятёрки': 'гнилой баран', 'пятёрке': 'гнилой баран',
+            'пятёрку': 'гнилой баран', 'пятёркой': 'гнилой баран', 'пятёркою': 'гнилой баран',
+            'пятёрок': 'гнилой баран', 'пятёркам': 'гнилой баран', 'пятёрками': 'гнилой баран',
+            'пятёрках': 'гнилой баран', '5opka': 'гнилой баран', 'кирилл баранов': 'гнилой баран',
+            'ханов': 'ксанакс', 'дискорд': 'дисковод', 'дискорде': 'дисководе',
+            'ктокатопс': 'ыглысик котокопс',
+        };
+
+        const SERVICE_POSTFIX = {
+            'я': 'ясь', 'и': 'ись', 'с': 'сс', 'в': 'вв', 'к': 'кк',
+            'о': 'ось', 'а': 'ась', 'но': 'нось', 'не': 'несь',
+            'за': 'зась', 'на': 'нась', 'по': 'пось', 'для': 'длясь',
+            'после': 'послесь', 'без': 'безсц', 'из-за': 'иззась',
+            'ты': 'тысьц', 'вы': 'высьц', 'кто': 'ктосьц',
+            'чё': 'чёсц', 'йоу': 'ййоусц', 'да': 'дасьц', 'нет': 'гнетсц',
+        };
+
+        const SHORT_WORD_BUFFERS = {
+            'из': 'иззец', 'раз': 'раззец', 'дня': 'дняса',
+            'начала': 'начальца', 'конца': 'концаса', 'чате': 'чатец',
+        };
+
+        const R_EXCEPTIONS = { 'ролики': 'лолики' };
+
+        const IRREGULAR_DEFORMATIONS = {
+            'большой': 'блольшой', 'пост': 'посот', 'коллегами': 'кололегами',
+            'картонки': 'крартонки', 'друг': 'дуруг',
+        };
+
+        // ==================== ФУНКЦИИ ====================
+        function replaceMat(text) {
+            MAT_PATTERNS.forEach(({regex, replacement}) => {
+                text = text.replace(regex, replacement);
+            });
+            return text;
+        }
+
+        function applyLexicalReplacements(word) {
+            const lower = word.toLowerCase();
+            if (IRREGULAR_DEFORMATIONS[lower]) return IRREGULAR_DEFORMATIONS[lower];
+            if (NICKNAMES[lower]) return NICKNAMES[lower];
+            if (LEXICON[lower]) return LEXICON[lower];
+            return word;
+        }
+
+        function applyPhoneticRules(word) {
+            let w = word;
+            // R -> Г исключения
+            if (R_EXCEPTIONS[w.toLowerCase()]) {
+                w = R_EXCEPTIONS[w.toLowerCase()];
+            } else {
+                // Р после гласной или в начале слова -> г
+                w = w.replace(/(?<=[аеёиоуыэюяАЕЁИОУЫЭЮЯ])р/g, 'г');
+                w = w.replace(/\bр/g, 'г');
+            }
+            // гнусавая вставка после гласной перед л,ч,н,д
+            w = w.replace(/([аеёиоуыэюя])([лчнд])/gi, '$1г$2');
+            // в после гласной -> г или гв (рандом)
+            if (Math.random() < 0.5) {
+                w = w.replace(/([аеёиоуыэюя])в/gi, '$1г');
+            } else {
+                w = w.replace(/([аеёиоуыэюя])в/gi, '$1гв');
+            }
+            // начальное В -> Ф с шансом 30%
+            if (Math.random() < 0.3) {
+                w = w.replace(/\bв/gi, 'ф');
+            }
+            // удвоение начального О (40%)
+            if ((w.startsWith('о') || w.startsWith('О')) && Math.random() < 0.4) {
+                w = 'о' + w;
+            }
+            return w;
+        }
+
+        function addPostfix(word) {
+            const lower = word.toLowerCase();
+            if (SERVICE_POSTFIX[lower]) return SERVICE_POSTFIX[lower];
+            if (SHORT_WORD_BUFFERS[lower]) return SHORT_WORD_BUFFERS[lower] + 'сц';
+            if (/[аеёиоуыэюяйьъ]$/i.test(word)) {
+                return word + 'сьц';
+            } else {
+                return word + 'сц';
+            }
+        }
+
+        function processWord(word) {
+            word = replaceMat(word);
+            word = applyLexicalReplacements(word);
+            word = applyPhoneticRules(word);
+            word = addPostfix(word);
+            return word;
+        }
+
+        function translateToXepom(text) {
+            // токенизация: слова и не-слова
+            const tokens = text.match(/[А-Яа-яёЁ]+|[^А-Яа-яёЁ]+/g) || [];
+            const processed = tokens.map(token => {
+                if (/[А-Яа-яёЁ]/.test(token)) {
+                    return processWord(token);
+                }
+                return token;
+            });
+            let translated = processed.join('');
+
+            // добавить слэши и случайные разделители
+            const chaosChance = parseFloat(document.getElementById('chaosChance').value);
+            const slashMin = parseInt(document.getElementById('slashMin').value);
+            const slashMax = parseInt(document.getElementById('slashMax').value);
+
+            translated = translated.replace(/([.!?]+)/g, (match, punct) => {
+                const slashes = '/'.repeat(Math.floor(Math.random() * 4) + 2); // 2-5
+                if (Math.random() < chaosChance) {
+                    const chaoticLen = Math.floor(Math.random() * (slashMax - slashMin + 1)) + slashMin;
+                    const chaotic = '/'.repeat(chaoticLen);
+                    return punct + slashes + '\n\n' + chaotic + '\n\n';
+                } else {
+                    return punct + slashes;
+                }
+            });
+
+            // финальный верхний регистр
+            return translated.toUpperCase();
+        }
+
+        function translateText() {
+            const inputText = document.getElementById('input').value;
+            const output = translateToXepom(inputText);
+            document.getElementById('output').textContent = output;
+        }
+
+        function copyOutput() {
+            const output = document.getElementById('output').textContent;
+            if (!output) return alert('Сначала переведи текст.');
+            navigator.clipboard.writeText(output).then(() => {
+                alert('✅ Текст скопирован!');
+            }).catch(() => {
+                alert('❌ Не удалось скопировать. Попробуй выделить вручную.');
+            });
+        }
+
+        function saveOutput() {
+            const output = document.getElementById('output').textContent;
+            if (!output) return alert('Сначала переведи текст.');
+            const blob = new Blob([output], {type: 'text/plain'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'xepom_output.txt';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Горячая клавиша Ctrl+Enter для перевода
+        document.getElementById('input').addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'Enter') {
+                translateText();
+            }
+        });
+    </script>
+</body>
+</html>
