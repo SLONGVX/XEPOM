@@ -117,10 +117,33 @@
         }
         .btn-icon-only { padding: 6px 10px; font-size: 20px; }
         .btn-icon-only .icon { margin: 0; }
+
+        /* Улучшенная кнопка переключения направления */
         .switch-btn {
-            font-size: 28px;
-            padding: 4px 10px;
+            font-size: 0; /* скрываем текст, будем использовать span'ы */
+            padding: 6px 12px;
             line-height: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            transition: all 0.3s;
+        }
+        .switch-btn .arrow {
+            font-size: 22px;
+            transition: color 0.3s, text-shadow 0.3s, transform 0.3s;
+            display: block;
+            color: #999;
+            text-shadow: none;
+        }
+        .switch-btn .arrow.active {
+            color: var(--secondary);
+            text-shadow: 0 0 12px var(--glow), 0 0 25px var(--secondary);
+            transform: scale(1.2);
+        }
+        /* Анимация поворота при клике */
+        .switch-btn:active {
+            transform: rotate(180deg);
         }
 
         /* иконка настроек */
@@ -165,7 +188,7 @@
         }
         .tooltip-container:hover .tooltip-text { visibility: visible; }
 
-        /* прямоугольник настройки хаоса */
+        /* прямоугольник настройки хаоса – улучшен */
         .chaos-box {
             margin-top: 25px;
             padding: 15px;
@@ -182,12 +205,39 @@
             text-shadow: 0 0 8px #ff00ff;
         }
         .chaos-level-display {
-            font-size: 2rem;
+            font-size: 2.5rem;
             font-weight: bold;
             color: #fff;
-            text-shadow: 0 0 15px #ff00ff;
+            text-shadow: 0 0 20px #ff00ff;
             margin: 5px 0;
-            transition: all 0.2s;
+            transition: all 0.15s ease-out;
+            /* плавный переход для динамики */
+        }
+        /* Классы для разных уровней безумия */
+        .chaos-level-display.low { color: #a0ffa0; text-shadow: 0 0 15px #0f0; }
+        .chaos-level-display.medium { color: #ffe484; text-shadow: 0 0 20px #ffaa00; }
+        .chaos-level-display.high { color: #ff6b6b; text-shadow: 0 0 25px #f00; }
+        .chaos-level-display.max {
+            color: #ff44ff;
+            text-shadow: 0 0 30px #f0f, 0 0 60px #f0f;
+            animation: glitch-text 0.3s infinite;
+        }
+        @keyframes glitch-text {
+            0% { transform: translate(0); }
+            20% { transform: translate(-3px, 2px); }
+            40% { transform: translate(3px, -1px); }
+            60% { transform: translate(-2px, -2px); }
+            80% { transform: translate(2px, 1px); }
+            100% { transform: translate(0); }
+        }
+        /* Анимация для числа при обновлении */
+        .chaos-level-display.pulse {
+            animation: pulse 0.2s ease-out;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
         }
 
         a { color: var(--glow); text-decoration: none; }
@@ -220,6 +270,7 @@
             .btn-main { width: 100%; text-align: center; }
             .btn-secondary { width: 100%; justify-content: center; }
             .settings-panel { right: 10px; left: 10px; min-width: auto; }
+            .switch-btn { flex-direction: row; gap: 4px; }
         }
     </style>
 </head>
@@ -249,7 +300,11 @@
         <p style="text-align:center; color: #d9b3ff;" id="modeHint">Введи текст на русском, получи XEPOM</p>
         <textarea id="input" placeholder="Твой текст..."></textarea>
         <div class="controls">
-            <button class="btn-secondary switch-btn" onclick="switchDirection()" title="Поменять направление">⇅</button>
+            <!-- Улучшенная кнопка переключения направления -->
+            <button class="btn-secondary switch-btn" onclick="switchDirection()" title="Поменять направление">
+                <span class="arrow" id="arrowUp">▲</span>
+                <span class="arrow" id="arrowDown">▼</span>
+            </button>
             <button class="btn-main" id="translateBtn" onclick="translateText()">ПЕРЕВЕСТИ</button>
             <button class="btn-secondary" onclick="copyOutput()">
                 <span class="icon">📋</span> Копировать
@@ -264,7 +319,7 @@
         <div id="output"></div>
 
         <hr style="border-color: #4d0099; margin-top: 20px;">
-        <p style="text-align:center; font-size:12px;">XEPOM-переводчик v4.1. Бюджет: 0 ₽. <a href="https://github.com/SLONGVX/XEPOM" target="_blank">GitHub</a></p>
+        <p style="text-align:center; font-size:12px;">XEPOM-переводчик v4.2. Бюджет: 0 ₽. <a href="https://github.com/SLONGVX/XEPOM" target="_blank">GitHub</a></p>
     </div>
 
     <!-- Модальное окно правил (без изменений) -->
@@ -343,9 +398,32 @@
             }
         });
 
+        // Обновление отображения уровня хаоса с сочной динамикой
         function updateChaosLabel() {
-            const val = document.getElementById('chaosLevel').value;
-            document.getElementById('chaosLevelDisplay').textContent = val;
+            const val = parseInt(document.getElementById('chaosLevel').value);
+            const display = document.getElementById('chaosLevelDisplay');
+            display.textContent = val;
+
+            // Убираем все предыдущие классы уровня
+            display.classList.remove('low', 'medium', 'high', 'max', 'pulse');
+
+            // Добавляем класс в зависимости от диапазона
+            if (val <= 20) {
+                display.classList.add('low');
+            } else if (val <= 50) {
+                display.classList.add('medium');
+            } else if (val < 100) {
+                display.classList.add('high');
+            } else {
+                display.classList.add('max');
+            }
+
+            // Короткая анимация пульса при изменении
+            display.classList.add('pulse');
+            setTimeout(() => display.classList.remove('pulse'), 200);
+
+            // Обновляем стрелки направления (на случай если хаос влияет на что-то ещё)
+            updateDirectionArrows();
         }
 
         // ========== МОДАЛЬНОЕ ОКНО ==========
@@ -355,12 +433,12 @@
             if (e.target === this) closeRules();
         });
 
-        // ========== СЛОВАРИ ==========
+        // ========== УСИЛЕННЫЕ СЛОВАРИ ==========
         const LEXICON = {
             'говорить': 'кумекать', 'разговаривать': 'кумекать', 'болтать': 'кумекать',
             'женщина': 'ведьма', 'женщины': 'ведьма', 'женщине': 'ведьма', 'женщину': 'ведьма',
-            'женщиной': 'ведьма', 'женщин': 'ведьма', 'женщинам': 'ведьма', 'женщинами': 'ведьма',
-            'женщинах': 'ведьма',
+            'женщиной': 'ведьма', 'женщиною': 'ведьма', 'женщинею': 'ведьма', // добавлены редкие формы
+            'женщин': 'ведьма', 'женщинам': 'ведьма', 'женщинами': 'ведьма', 'женщинах': 'ведьма',
             'шутка': 'хохма', 'юмор': 'хохма',
             'плохо': 'дряхло', 'плохой': 'дряхлый', 'сволочь': 'сволочь',
             'секс': 'идиллия', 'ругаться': 'чертыхаться',
@@ -369,16 +447,22 @@
         };
 
         const MAT_PATTERNS = [
-            // Явные матерные слова целиком
+            // Расширенный список матерных корней и производных
             { regex: /\bнаху[йя]\w*/gi, replacement: 'дичь' },
             { regex: /\bпоху[йя]\w*/gi, replacement: 'дичь' },
-            { regex: /\bху[йёяеи]\w*/gi, replacement: 'дичь' },
+            { regex: /\bху[йёяеию]\w*/gi, replacement: 'дичь' }, // ловит "хуй", "хуёвый" и т.п.
+            { regex: /\bниху[йя]\w*/gi, replacement: 'дичь' },    // "нихуя"
+            { regex: /\bнеху[йя]\w*/gi, replacement: 'дичь' },    // "нехуй"
+            { regex: /\bдоху[йя]\w*/gi, replacement: 'дичь' },    // "дохуя"
+            { regex: /\bнаху[йя]\w*/gi, replacement: 'дичь' },    // уже есть, но продублируем для надёжности
+            { regex: /\bзаху[йя]\w*/gi, replacement: 'дичь' },
+            { regex: /\bподху[йя]\w*/gi, replacement: 'дичь' },
             { regex: /\bпизд\w*/gi, replacement: 'дряхлость' },
             { regex: /\bеб[ауёие]\w*/gi, replacement: 'чёрт' },
             { regex: /\bбля(дь|дская|дство)\w*/gi, replacement: 'блин' },
-            // другие возможные
             { regex: /\bзаеб\w*/gi, replacement: 'чёрт' },
             { regex: /\bуеб\w*/gi, replacement: 'чёрт' },
+            { regex: /\bвыеб\w*/gi, replacement: 'чёрт' },
         ];
 
         const NICKNAMES = {
@@ -456,28 +540,63 @@
             else return word + 'сц';
         }
 
+        // Расширенный генератор безумия (хрючево)
         function extraChaos(word, level) {
             if (level <= 50) return word;
             let w = word;
-            const chance = (level - 50) / 50;
+            const chance = (level - 50) / 50; // 0..1
+
+            // Старые эффекты с увеличенной вероятностью на высоких уровнях
             if (Math.random() < chance * 0.4) {
-                w = w.replace(/[аеёиоуыэюя]/i, () => Math.random() < 0.5 ? 'ю' : 'я');
+                w = w.replace(/[аеёиоуыэюя]/gi, () => Math.random() < 0.6 ? 'ю' : 'ы'); // больше гласных замен
             }
-            if (Math.random() < chance * 0.3 && w.length > 1) {
-                w = w[0] + w;
+            if (Math.random() < chance * 0.35 && w.length > 1) {
+                w = w[0] + w; // удвоение первой буквы
             }
             if (Math.random() < chance * 0.5) {
                 w += Math.random() < 0.5 ? 'ХРЮ' : 'БРЯ';
+            }
+
+            // Новые эффекты при уровне >= 90 (или 100)
+            if (level >= 90) {
+                // Вставка "ХРЮ" в случайное место
+                if (Math.random() < 0.25 && w.length > 2) {
+                    const pos = Math.floor(Math.random() * (w.length - 1)) + 1;
+                    w = w.slice(0, pos) + 'ХРЮ' + w.slice(pos);
+                }
+                // Замена всех согласных на 'Х' (полное хрюканье)
+                if (Math.random() < 0.15) {
+                    w = w.replace(/[бвгджзйклмнпрстфхцчшщ]/gi, 'Х');
+                }
+                // Реверс слова (20% шанс)
+                if (Math.random() < 0.2) {
+                    w = w.split('').reverse().join('');
+                }
+                // Дублирование каждого символа (10% шанс)
+                if (Math.random() < 0.1) {
+                    w = w.split('').map(c => c + c).join('');
+                }
+            }
+            // Для абсолютного максимума (100) – дополнительный шторм
+            if (level === 100) {
+                // 50% шанс дополнительной случайной вставки
+                if (Math.random() < 0.5) {
+                    const chaoticAdditions = ['ХРЮ', 'ХРЯ', 'Ю', 'ЫЫ', '!!!!', '////'];
+                    const add = chaoticAdditions[Math.floor(Math.random() * chaoticAdditions.length)];
+                    w += add;
+                }
+                // Иногда заменяем пробелы на " ХРЮ " (если слово – последнее в предложении)
+                // Но здесь мы работаем с отдельным словом, поэтому просто добавим в конец
             }
             return w;
         }
 
         function processWord(word, chaosFactor, chaosLevel) {
-            word = replaceMat(word);
-            word = applyLexicalReplacements(word);
-            word = applyPhoneticRules(word, chaosFactor);
-            word = addPostfix(word, chaosFactor);
-            word = extraChaos(word, chaosLevel);
+            word = replaceMat(word);                  // 1. мат-фильтр
+            word = applyLexicalReplacements(word);   // 2. лексика
+            word = applyPhoneticRules(word, chaosFactor); // 3. фонетика
+            word = addPostfix(word, chaosFactor);    // 4. постфикс
+            word = extraChaos(word, chaosLevel);     // 5. безумные мутации
             return word;
         }
 
@@ -525,6 +644,19 @@
             return result.join('').replace(/\s+/g, ' ').trim();
         }
 
+        // ========== УПРАВЛЕНИЕ НАПРАВЛЕНИЕМ И СТРЕЛКАМИ ==========
+        function updateDirectionArrows() {
+            const up = document.getElementById('arrowUp');
+            const down = document.getElementById('arrowDown');
+            if (direction === 'ru2xepom') {
+                up.classList.add('active');
+                down.classList.remove('active');
+            } else {
+                down.classList.add('active');
+                up.classList.remove('active');
+            }
+        }
+
         function switchDirection() {
             const input = document.getElementById('input');
             const output = document.getElementById('output');
@@ -544,8 +676,14 @@
                 btn.textContent = 'ПЕРЕВЕСТИ';
                 input.placeholder = 'Твой текст...';
             }
+            updateDirectionArrows();
+            // Маленькая анимация на кнопке
+            const switchBtn = document.querySelector('.switch-btn');
+            switchBtn.style.transform = 'rotate(180deg)';
+            setTimeout(() => { switchBtn.style.transform = ''; }, 300);
         }
 
+        // ========== ОСНОВНЫЕ ФУНКЦИИ ==========
         function translateText() {
             const input = document.getElementById('input').value;
             const chaosLevel = parseInt(document.getElementById('chaosLevel').value);
@@ -580,8 +718,9 @@
             if (e.ctrlKey && e.key === 'Enter') translateText();
         });
 
-        // Инициализация отображения хаоса
+        // Инициализация при загрузке
         updateChaosLabel();
+        updateDirectionArrows();
     </script>
 </body>
 </html>
