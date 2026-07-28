@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>////XEP0M-ПЕРЕВОДЧИК////</title>
+    <title>///XEP0M-ПЕРЕВОДЧИК///</title>
     <style>
         :root {
             --bg: #0d001a;
@@ -13,9 +13,7 @@
             --text: #f0e6ff;
             --text-soft: #d9b3ff;
         }
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
         body {
             background: var(--bg);
             background-image: radial-gradient(circle at 20% 30%, #2b0040 0%, transparent 40%),
@@ -32,44 +30,29 @@
             overflow-x: hidden;
             animation: bgShift 8s ease-in-out infinite alternate;
         }
-
         @keyframes bgShift {
             0% { background-position: 0% 0%, 100% 100%, 50% 0%; }
             100% { background-position: 30% 20%, 80% 60%, 50% 30%; }
         }
-
         .floating-chaos {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            pointer-events: none;
-            z-index: 0;
-            opacity: 0.3;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 0; opacity: 0.3;
             background: repeating-linear-gradient(45deg, #b300ff 0px, #b300ff 2px, transparent 2px, transparent 10px),
                         repeating-linear-gradient(-45deg, #ff00ff 0px, #ff00ff 2px, transparent 2px, transparent 15px);
             animation: floatChaos 20s linear infinite;
         }
-
         @keyframes floatChaos {
             0% { transform: translateY(0) rotate(0deg); }
             100% { transform: translateY(-30px) rotate(2deg); }
         }
-
         .container {
-            position: relative;
-            z-index: 1;
-            width: 100%;
-            max-width: 850px;
-            background: rgba(10, 0, 30, 0.85);
-            backdrop-filter: blur(12px);
+            position: relative; z-index: 1; width: 100%; max-width: 850px;
+            background: rgba(10, 0, 30, 0.85); backdrop-filter: blur(12px);
             border: 2px solid var(--primary);
             box-shadow: 0 0 30px var(--glow), 0 0 60px var(--secondary), inset 0 0 20px rgba(179, 0, 255, 0.3);
-            padding: 30px;
-            border-radius: 15px;
+            padding: 30px; border-radius: 15px;
             animation: containerGlitch 3s infinite step-end;
-            overflow: visible; /* чтобы шестерёнка не обрезалась */
         }
-
         @keyframes containerGlitch {
             0%, 100% { box-shadow: 0 0 30px var(--glow), 0 0 60px var(--secondary); }
             5% { box-shadow: 10px 0 40px var(--primary), -5px 0 50px var(--secondary); }
@@ -77,229 +60,162 @@
             15% { box-shadow: -8px 0 50px var(--primary), 8px 0 30px var(--secondary); }
             16% { box-shadow: 0 0 30px var(--glow), 0 0 60px var(--secondary); }
         }
-
         h1 {
-            font-size: 3rem;
-            text-align: center;
-            color: var(--primary);
+            font-size: 2.6rem; text-align: center; color: var(--primary);
             text-shadow: 0 0 15px var(--secondary), 0 0 40px var(--glow), 3px 3px 0 #000;
-            letter-spacing: 4px;
-            margin-bottom: 10px;
+            letter-spacing: 3px; margin-bottom: 10px;
             animation: headerShake 0.2s infinite alternate, headerFlicker 3s infinite;
+            white-space: nowrap;
         }
-
         @keyframes headerShake {
             0% { transform: translate(0, 0); }
             25% { transform: translate(-2px, 1px); }
             75% { transform: translate(2px, -1px); }
             100% { transform: translate(0, 0); }
         }
-
         @keyframes headerFlicker {
             0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
             20%, 24%, 55% { opacity: 0.4; }
         }
-
         textarea, #output {
-            width: 100%;
-            background: #0a001a;
-            border: 1px solid var(--primary);
-            color: var(--text);
-            font-family: 'Courier New', monospace;
-            font-size: 16px;
-            padding: 15px;
-            margin: 10px 0;
-            resize: vertical;
-            outline: none;
-            transition: all 0.3s;
-            box-shadow: 0 0 15px rgba(179, 0, 255, 0.5), inset 0 0 10px #1a0030;
+            width: 100%; background: #0a001a; border: 1px solid var(--primary);
+            color: var(--text); font-family: 'Courier New', monospace; font-size: 16px;
+            padding: 15px; margin: 10px 0; resize: vertical; outline: none;
+            transition: all 0.3s; box-shadow: 0 0 15px rgba(179, 0, 255, 0.5), inset 0 0 10px #1a0030;
         }
-
-        textarea { height: 280px; }
-
+        textarea { height: 240px; }
         textarea:focus, #output:focus {
-            border-color: var(--secondary);
-            box-shadow: 0 0 25px var(--glow), inset 0 0 20px var(--primary);
+            border-color: var(--secondary); box-shadow: 0 0 25px var(--glow), inset 0 0 20px var(--primary);
         }
-
         #output {
-            min-height: 150px;
-            white-space: pre-wrap;
-            overflow-y: auto;
-            word-break: break-word;
+            min-height: 150px; white-space: pre-wrap; overflow-y: auto; word-break: break-word;
         }
-
-        /* ====== КНОПКИ ====== */
         .controls {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            margin: 20px 0;
-            flex-wrap: wrap;
+            display: flex; align-items: center; justify-content: center; gap: 12px;
+            margin: 20px 0; flex-wrap: wrap;
         }
-
         .btn-main {
-            padding: 18px 40px;
-            font-size: 22px;
-            letter-spacing: 4px;
-            background: var(--primary);
-            color: #000;
-            border: 2px solid var(--secondary);
+            padding: 16px 32px; font-size: 20px; letter-spacing: 3px;
+            background: var(--primary); color: #000; border: 2px solid var(--secondary);
             box-shadow: 0 0 30px var(--glow), 0 0 60px var(--secondary), inset 0 0 10px #fff;
-            font-weight: bold;
-            text-shadow: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-family: 'Courier New', monospace;
+            font-weight: bold; text-shadow: none; border-radius: 8px; cursor: pointer;
+            transition: all 0.3s; font-family: 'Courier New', monospace;
         }
-
         .btn-main:hover {
-            background: var(--secondary);
-            box-shadow: 0 0 50px var(--glow), 0 0 80px var(--primary);
+            background: var(--secondary); box-shadow: 0 0 50px var(--glow), 0 0 80px var(--primary);
             transform: scale(1.07);
         }
-
         .btn-secondary {
-            padding: 8px 14px;
-            font-size: 14px;
-            letter-spacing: 1px;
-            background: transparent;
-            border: 1px solid var(--primary);
-            color: var(--text-soft);
-            box-shadow: 0 0 10px rgba(179, 0, 255, 0.4);
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 6px;
+            padding: 8px 14px; font-size: 14px; letter-spacing: 1px;
+            background: transparent; border: 1px solid var(--primary); color: var(--text-soft);
+            box-shadow: 0 0 10px rgba(179, 0, 255, 0.4); border-radius: 5px; cursor: pointer;
+            transition: all 0.3s; display: flex; align-items: center; gap: 6px;
             font-family: 'Courier New', monospace;
         }
-
         .btn-secondary:hover {
-            background: rgba(179, 0, 255, 0.2);
-            box-shadow: 0 0 20px var(--glow);
-            color: #fff;
+            background: rgba(179, 0, 255, 0.2); box-shadow: 0 0 20px var(--glow); color: #fff;
         }
-
-        .btn-secondary .icon { font-size: 16px; }
-
-        /* ====== ШЕСТЕРЁНКА НАСТРОЕК ====== */
-        .settings-icon {
-            position: absolute;
-            top: 15px;
-            right: 20px;
+        .btn-icon-only { padding: 6px 10px; font-size: 20px; }
+        .btn-icon-only .icon { margin: 0; }
+        .switch-btn {
             font-size: 28px;
-            color: var(--primary);
-            cursor: pointer;
-            z-index: 10;
-            transition: all 0.3s;
-            text-shadow: 0 0 10px var(--glow);
-            user-select: none;
+            padding: 4px 10px;
+            line-height: 1;
         }
 
+        /* иконка настроек */
+        .settings-icon {
+            position: absolute; top: 15px; right: 20px; font-size: 28px;
+            color: var(--primary); cursor: pointer; z-index: 10; transition: all 0.3s;
+            text-shadow: 0 0 10px var(--glow); user-select: none;
+        }
         .settings-icon:hover {
-            color: var(--secondary);
-            transform: rotate(30deg) scale(1.1);
+            color: var(--secondary); transform: rotate(30deg) scale(1.1);
             text-shadow: 0 0 20px var(--secondary);
         }
-
         .settings-panel {
-            display: none;
-            position: absolute;
-            top: 50px;
-            right: 20px;
-            background: rgba(10, 0, 30, 0.95);
-            border: 1px solid var(--primary);
-            box-shadow: 0 0 25px var(--glow);
-            padding: 20px;
-            border-radius: 10px;
-            z-index: 20;
-            min-width: 250px;
+            display: none; position: absolute; top: 50px; right: 20px;
+            background: rgba(10, 0, 30, 0.95); border: 1px solid var(--primary);
+            box-shadow: 0 0 25px var(--glow); padding: 20px; border-radius: 10px;
+            z-index: 20; min-width: 280px; color: var(--text-soft);
         }
-
         .settings-panel.active { display: block; }
-
         .settings-panel label {
-            display: block;
-            margin: 10px 0;
-            color: var(--text-soft);
+            display: block; margin: 12px 0 4px; font-weight: bold;
         }
-
-        .settings-panel input[type="range"] {
-            accent-color: var(--primary);
-            width: 100%;
+        .settings-panel .setting-row {
+            display: flex; align-items: center; justify-content: space-between;
         }
-
+        .settings-panel input[type="range"] { accent-color: var(--primary); width: 100%; }
         .settings-panel input[type="number"] {
-            background: #0a001a;
-            border: 1px solid var(--primary);
-            color: var(--text);
-            padding: 5px;
-            width: 70px;
+            background: #0a001a; border: 1px solid var(--primary); color: var(--text);
+            padding: 5px; width: 70px;
+        }
+
+        /* tooltip */
+        .tooltip-container {
+            position: relative; display: inline-block; cursor: help;
+            margin-left: 5px; color: var(--secondary); font-weight: bold;
+        }
+        .tooltip-text {
+            visibility: hidden; width: 200px; background: rgba(0,0,0,0.8); color: #fff;
+            text-align: center; border-radius: 6px; padding: 5px; position: absolute;
+            z-index: 30; bottom: 125%; left: 50%; margin-left: -100px;
+            font-size: 12px; line-height: 1.4;
+        }
+        .tooltip-container:hover .tooltip-text { visibility: visible; }
+
+        /* прямоугольник настройки хаоса */
+        .chaos-box {
+            margin-top: 25px;
+            padding: 15px;
+            border: 2px solid #ff00ff;
+            border-radius: 12px;
+            background: rgba(179, 0, 255, 0.1);
+            box-shadow: 0 0 20px #ff00ff88, inset 0 0 10px #b300ff;
+            text-align: center;
+        }
+        .chaos-box h3 {
+            margin: 0 0 10px;
+            color: #ffcc00;
+            font-size: 1.2rem;
+            text-shadow: 0 0 8px #ff00ff;
+        }
+        .chaos-level-display {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 0 0 15px #ff00ff;
+            margin: 5px 0;
+            transition: all 0.2s;
         }
 
         a { color: var(--glow); text-decoration: none; }
         a:hover { text-decoration: underline; }
 
-        /* ====== МОДАЛЬНОЕ ОКНО ПРАВИЛ ====== */
         .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center;
         }
         .modal-overlay.active { display: flex; }
-
         .modal-content {
-            background: #12002b;
-            border: 2px solid var(--primary);
-            box-shadow: 0 0 30px var(--glow);
-            max-width: 700px;
-            width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
-            padding: 25px;
-            border-radius: 10px;
-            color: var(--text-soft);
-            font-family: 'Courier New', monospace;
-            line-height: 1.6;
-            position: relative;
+            background: #12002b; border: 2px solid var(--primary); box-shadow: 0 0 30px var(--glow);
+            max-width: 700px; width: 90%; max-height: 80vh; overflow-y: auto;
+            padding: 25px; border-radius: 10px; color: var(--text-soft);
+            font-family: 'Courier New', monospace; line-height: 1.6; position: relative;
         }
-
-        .modal-content h2 {
-            color: var(--secondary);
-            text-align: center;
-            margin-bottom: 15px;
-        }
-        .modal-content h3 {
-            color: var(--primary);
-            margin-top: 20px;
-            border-bottom: 1px solid #4d0099;
-            padding-bottom: 5px;
-        }
+        .modal-content h2 { color: var(--secondary); text-align: center; margin-bottom: 15px; }
+        .modal-content h3 { color: var(--primary); margin-top: 20px; border-bottom: 1px solid #4d0099; padding-bottom: 5px; }
         .modal-content ul, .modal-content ol { padding-left: 20px; }
         .modal-content li { margin: 5px 0; }
         .modal-close {
-            position: absolute;
-            top: 10px; right: 15px;
-            background: transparent;
-            border: none;
-            color: var(--secondary);
-            font-size: 28px;
-            cursor: pointer;
-            font-weight: bold;
+            position: absolute; top: 10px; right: 15px; background: transparent;
+            border: none; color: var(--secondary); font-size: 28px; cursor: pointer; font-weight: bold;
         }
         .modal-close:hover { color: #fff; }
 
         @media (max-width: 600px) {
-            h1 { font-size: 2rem; }
+            h1 { font-size: 1.6rem; letter-spacing: 1px; }
             .controls { flex-direction: column; align-items: stretch; }
             .btn-main { width: 100%; text-align: center; }
             .btn-secondary { width: 100%; justify-content: center; }
@@ -310,44 +226,54 @@
 <body>
     <div class="floating-chaos"></div>
     <div class="container">
-        <!-- иконка-шестерёнка -->
         <div class="settings-icon" onclick="toggleSettings()" title="Настройки хаоса">⚙️</div>
-        <!-- панель настроек (скрыта) -->
         <div class="settings-panel" id="settingsPanel">
-            <label>Шанс разделителя (0-1): <input type="range" id="chaosChance" min="0" max="1" step="0.05" value="0.3"></label>
-            <label>Мин. слэшей: <input type="number" id="slashMin" value="5" min="1" max="100"></label>
-            <label>Макс. слэшей: <input type="number" id="slashMax" value="70" min="1" max="200"></label>
-            <button class="btn-secondary" onclick="toggleSettings()" style="margin-top:10px; width:100%;">Закрыть</button>
+            <label>Шанс разделителя <span class="tooltip-container">(?)<span class="tooltip-text">Вероятность появления длинной полосы из /</span></span></label>
+            <input type="range" id="chaosChance" min="0" max="1" step="0.05" value="0.3">
+            <label>Мин. слэшей <span class="tooltip-container">(?)<span class="tooltip-text">Минимальная длина полосы</span></span></label>
+            <input type="number" id="slashMin" value="5" min="1" max="100">
+            <label>Макс. слэшей <span class="tooltip-container">(?)<span class="tooltip-text">Максимальная длина полосы</span></span></label>
+            <input type="number" id="slashMax" value="70" min="1" max="200">
+
+            <div class="chaos-box">
+                <h3>🔥 НАСТРОЙКА ХАОСА</h3>
+                <div class="chaos-level-display" id="chaosLevelDisplay">50</div>
+                <input type="range" id="chaosLevel" min="0" max="100" value="50" step="1" oninput="updateChaosLabel()">
+                <div style="display: flex; justify-content: space-between; font-size: 12px;">
+                    <span>0 (чистый русский)</span><span>50 (XEPOM)</span><span>100 (хрючево)</span>
+                </div>
+            </div>
         </div>
 
-        <h1>////XEP0M-ПЕРЕВОДЧИК////</h1>
-        <p style="text-align:center; color: #d9b3ff;">Введи или вставь текст (можно многострочный).<br>
-        <small>Для отправки нажми <b>ПЕРЕВЕСТИ</b> или Ctrl+Enter.</small></p>
+        <h1>///XEP0M-ПЕРЕВОДЧИК///</h1>
+        <p style="text-align:center; color: #d9b3ff;" id="modeHint">Введи текст на русском, получи XEPOM</p>
         <textarea id="input" placeholder="Твой текст..."></textarea>
         <div class="controls">
-            <button class="btn-main" onclick="translateText()">ПЕРЕВЕСТИ</button>
+            <button class="btn-secondary switch-btn" onclick="switchDirection()" title="Поменять направление">⇅</button>
+            <button class="btn-main" id="translateBtn" onclick="translateText()">ПЕРЕВЕСТИ</button>
             <button class="btn-secondary" onclick="copyOutput()">
                 <span class="icon">📋</span> Копировать
             </button>
             <button class="btn-secondary" onclick="saveOutput()">
                 <span class="icon">💾</span> Сохранить
             </button>
-            <button class="btn-secondary" onclick="openRules()">
-                <span class="icon">📖</span> Правила
+            <button class="btn-secondary btn-icon-only" onclick="openRules()" title="Правила языка">
+                <span class="icon">📖</span>
             </button>
         </div>
         <div id="output"></div>
 
         <hr style="border-color: #4d0099; margin-top: 20px;">
-        <p style="text-align:center; font-size:12px;">XEPOM-переводчик v3.5 LSD. Бюджет: 0 ₽. <a href="https://github.com/SLONGVX/XEPOM" target="_blank">GitHub</a></p>
+        <p style="text-align:center; font-size:12px;">XEPOM-переводчик v4.1. Бюджет: 0 ₽. <a href="https://github.com/SLONGVX/XEPOM" target="_blank">GitHub</a></p>
     </div>
 
-    <!-- МОДАЛЬНОЕ ОКНО ПРАВИЛ -->
+    <!-- Модальное окно правил (без изменений) -->
     <div class="modal-overlay" id="rulesModal">
         <div class="modal-content">
             <button class="modal-close" onclick="closeRules()">&times;</button>
             <h2>📜 ПОЛНЫЙ СВОД ПРАВИЛ ЯЗЫКА XEPOMа</h2>
             <p style="text-align:center; color:#cc66ff;">(Как он говорит и пишет)</p>
+            <!-- содержимое правил идентично предыдущей версии -->
             <h3>1. Универсальный постфикс «‑СЬЦ» / «‑СЦ»</h3>
             <ul>
                 <li>После гласной, «й», «ь» → <b>‑СЬЦ</b> <br> <i>ребята → ГРЕБЯТАСЬЦ, делать → ДЕГЛАТЬСЬЦ</i></li>
@@ -396,20 +322,19 @@
     </div>
 
     <script>
-        // Переключение панели настроек
+        // ========== СОСТОЯНИЕ ==========
+        let direction = 'ru2xepom';
+
+        // ========== НАСТРОЙКИ ==========
         function toggleSettings() {
             document.getElementById('settingsPanel').classList.toggle('active');
         }
-
-        // Модальное окно правил
-        function openRules() {
-            document.getElementById('rulesModal').classList.add('active');
-        }
-        function closeRules() {
-            document.getElementById('rulesModal').classList.remove('active');
-        }
-        document.getElementById('rulesModal').addEventListener('click', function(e) {
-            if (e.target === this) closeRules();
+        document.addEventListener('click', function(e) {
+            const panel = document.getElementById('settingsPanel');
+            const icon = document.querySelector('.settings-icon');
+            if (!panel.contains(e.target) && e.target !== icon) {
+                panel.classList.remove('active');
+            }
         });
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
@@ -418,21 +343,44 @@
             }
         });
 
-        // ==================== ЛОГИКА ПЕРЕВОДЧИКА ====================
+        function updateChaosLabel() {
+            const val = document.getElementById('chaosLevel').value;
+            document.getElementById('chaosLevelDisplay').textContent = val;
+        }
+
+        // ========== МОДАЛЬНОЕ ОКНО ==========
+        function openRules() { document.getElementById('rulesModal').classList.add('active'); }
+        function closeRules() { document.getElementById('rulesModal').classList.remove('active'); }
+        document.getElementById('rulesModal').addEventListener('click', function(e) {
+            if (e.target === this) closeRules();
+        });
+
+        // ========== СЛОВАРИ ==========
         const LEXICON = {
             'говорить': 'кумекать', 'разговаривать': 'кумекать', 'болтать': 'кумекать',
-            'женщина': 'ведьма', 'шутка': 'хохма', 'юмор': 'хохма',
+            'женщина': 'ведьма', 'женщины': 'ведьма', 'женщине': 'ведьма', 'женщину': 'ведьма',
+            'женщиной': 'ведьма', 'женщин': 'ведьма', 'женщинам': 'ведьма', 'женщинами': 'ведьма',
+            'женщинах': 'ведьма',
+            'шутка': 'хохма', 'юмор': 'хохма',
             'плохо': 'дряхло', 'плохой': 'дряхлый', 'сволочь': 'сволочь',
             'секс': 'идиллия', 'ругаться': 'чертыхаться',
             'моки миоки': 'маки маки', 'моки': 'маки', 'миоки': 'маки',
             'фрикленд': 'фрактальный ленд',
         };
+
         const MAT_PATTERNS = [
+            // Явные матерные слова целиком
+            { regex: /\bнаху[йя]\w*/gi, replacement: 'дичь' },
+            { regex: /\bпоху[йя]\w*/gi, replacement: 'дичь' },
             { regex: /\bху[йёяеи]\w*/gi, replacement: 'дичь' },
             { regex: /\bпизд\w*/gi, replacement: 'дряхлость' },
-            { regex: /\bеба(ть|л|н)\w*/gi, replacement: 'чёрт' },
+            { regex: /\bеб[ауёие]\w*/gi, replacement: 'чёрт' },
             { regex: /\bбля(дь|дская|дство)\w*/gi, replacement: 'блин' },
+            // другие возможные
+            { regex: /\bзаеб\w*/gi, replacement: 'чёрт' },
+            { regex: /\bуеб\w*/gi, replacement: 'чёрт' },
         ];
+
         const NICKNAMES = {
             'пятёрка': 'гнилой баран', 'пятёрки': 'гнилой баран', 'пятёрке': 'гнилой баран',
             'пятёрку': 'гнилой баран', 'пятёркой': 'гнилой баран', 'пятёркою': 'гнилой баран',
@@ -441,6 +389,7 @@
             'ханов': 'ксанакс', 'дискорд': 'дисковод', 'дискорде': 'дисководе',
             'ктокатопс': 'ыглысик котокопс',
         };
+
         const SERVICE_POSTFIX = {
             'я': 'ясь', 'и': 'ись', 'с': 'сс', 'в': 'вв', 'к': 'кк',
             'о': 'ось', 'а': 'ась', 'но': 'нось', 'не': 'несь',
@@ -449,10 +398,12 @@
             'ты': 'тысьц', 'вы': 'высьц', 'кто': 'ктосьц',
             'чё': 'чёсц', 'йоу': 'ййоусц', 'да': 'дасьц', 'нет': 'гнетсц',
         };
+
         const SHORT_WORD_BUFFERS = {
             'из': 'иззец', 'раз': 'раззец', 'дня': 'дняса',
             'начала': 'начальца', 'конца': 'концаса', 'чате': 'чатец',
         };
+
         const R_EXCEPTIONS = { 'ролики': 'лолики' };
         const IRREGULAR_DEFORMATIONS = {
             'большой': 'блольшой', 'пост': 'посот', 'коллегами': 'кололегами',
@@ -463,6 +414,7 @@
             MAT_PATTERNS.forEach(({regex, replacement}) => { text = text.replace(regex, replacement); });
             return text;
         }
+
         function applyLexicalReplacements(word) {
             const lower = word.toLowerCase();
             if (IRREGULAR_DEFORMATIONS[lower]) return IRREGULAR_DEFORMATIONS[lower];
@@ -470,39 +422,78 @@
             if (LEXICON[lower]) return LEXICON[lower];
             return word;
         }
-        function applyPhoneticRules(word) {
+
+        function applyPhoneticRules(word, chaosFactor) {
             let w = word;
-            if (R_EXCEPTIONS[w.toLowerCase()]) { w = R_EXCEPTIONS[w.toLowerCase()]; }
-            else {
+            if (R_EXCEPTIONS[w.toLowerCase()]) {
+                w = R_EXCEPTIONS[w.toLowerCase()];
+            } else if (Math.random() < chaosFactor) {
                 w = w.replace(/(?<=[аеёиоуыэюяАЕЁИОУЫЭЮЯ])р/g, 'г');
                 w = w.replace(/\bр/g, 'г');
             }
-            w = w.replace(/([аеёиоуыэюя])([лчнд])/gi, '$1г$2');
-            if (Math.random() < 0.5) { w = w.replace(/([аеёиоуыэюя])в/gi, '$1г'); }
-            else { w = w.replace(/([аеёиоуыэюя])в/gi, '$1гв'); }
-            if (Math.random() < 0.3) { w = w.replace(/\bв/gi, 'ф'); }
-            if ((w.startsWith('о') || w.startsWith('О')) && Math.random() < 0.4) { w = 'о' + w; }
+            if (Math.random() < chaosFactor * 0.8) {
+                w = w.replace(/([аеёиоуыэюя])([лчнд])/gi, '$1г$2');
+            }
+            if (Math.random() < chaosFactor * 0.7) {
+                if (Math.random() < 0.5) w = w.replace(/([аеёиоуыэюя])в/gi, '$1г');
+                else w = w.replace(/([аеёиоуыэюя])в/gi, '$1гв');
+            }
+            if (Math.random() < chaosFactor * 0.3) {
+                w = w.replace(/\bв/gi, 'ф');
+            }
+            if ((w.startsWith('о') || w.startsWith('О')) && Math.random() < chaosFactor * 0.4) {
+                w = 'о' + w;
+            }
             return w;
         }
-        function addPostfix(word) {
+
+        function addPostfix(word, chaosFactor) {
+            if (Math.random() > chaosFactor) return word;
             const lower = word.toLowerCase();
             if (SERVICE_POSTFIX[lower]) return SERVICE_POSTFIX[lower];
             if (SHORT_WORD_BUFFERS[lower]) return SHORT_WORD_BUFFERS[lower] + 'сц';
             if (/[аеёиоуыэюяйьъ]$/i.test(word)) return word + 'сьц';
             else return word + 'сц';
         }
-        function processWord(word) {
+
+        function extraChaos(word, level) {
+            if (level <= 50) return word;
+            let w = word;
+            const chance = (level - 50) / 50;
+            if (Math.random() < chance * 0.4) {
+                w = w.replace(/[аеёиоуыэюя]/i, () => Math.random() < 0.5 ? 'ю' : 'я');
+            }
+            if (Math.random() < chance * 0.3 && w.length > 1) {
+                w = w[0] + w;
+            }
+            if (Math.random() < chance * 0.5) {
+                w += Math.random() < 0.5 ? 'ХРЮ' : 'БРЯ';
+            }
+            return w;
+        }
+
+        function processWord(word, chaosFactor, chaosLevel) {
             word = replaceMat(word);
             word = applyLexicalReplacements(word);
-            word = applyPhoneticRules(word);
-            word = addPostfix(word);
+            word = applyPhoneticRules(word, chaosFactor);
+            word = addPostfix(word, chaosFactor);
+            word = extraChaos(word, chaosLevel);
             return word;
         }
-        function translateToXepom(text) {
+
+        function translateToXepom(text, chaosLevel) {
+            if (chaosLevel == 0) return text.toUpperCase();
+            const chaosFactor = Math.min(1, chaosLevel / 50);
             const tokens = text.match(/[А-Яа-яёЁ]+|[^А-Яа-яёЁ]+/g) || [];
-            const processed = tokens.map(token => /[А-Яа-яёЁ]/.test(token) ? processWord(token) : token);
+            const processed = tokens.map(token => {
+                if (/[А-Яа-яёЁ]/.test(token)) {
+                    return processWord(token, chaosFactor, chaosLevel);
+                }
+                return token;
+            });
             let translated = processed.join('');
-            const chaosChance = parseFloat(document.getElementById('chaosChance').value);
+
+            const chaosChance = parseFloat(document.getElementById('chaosChance').value) * chaosFactor;
             const slashMin = parseInt(document.getElementById('slashMin').value);
             const slashMax = parseInt(document.getElementById('slashMax').value);
             translated = translated.replace(/([.!?]+)/g, (match, punct) => {
@@ -514,16 +505,66 @@
             });
             return translated.toUpperCase();
         }
-        function translateText() {
-            const output = translateToXepom(document.getElementById('input').value);
-            document.getElementById('output').textContent = output;
+
+        function deXepomize(text) {
+            let clean = text.replace(/\/+/g, ' ').replace(/\n+/g, ' ').replace(/\s+/g, ' ').trim().toLowerCase();
+            const tokens = clean.split(/([^а-яё]+)/i).filter(Boolean);
+            const reverseLex = {};
+            for (let [k, v] of Object.entries(LEXICON)) reverseLex[v] = k;
+            for (let [k, v] of Object.entries(NICKNAMES)) reverseLex[v] = k;
+            for (let [k, v] of Object.entries(IRREGULAR_DEFORMATIONS)) reverseLex[v] = k;
+
+            const result = tokens.map(token => {
+                if (!/[а-яё]/i.test(token)) return token;
+                if (reverseLex[token]) return reverseLex[token];
+                let stem = token.replace(/(сьц|сц)$/i, '');
+                if (reverseLex[stem]) return reverseLex[stem];
+                stem = stem.replace(/г/g, 'р');
+                return stem;
+            });
+            return result.join('').replace(/\s+/g, ' ').trim();
         }
+
+        function switchDirection() {
+            const input = document.getElementById('input');
+            const output = document.getElementById('output');
+            const hint = document.getElementById('modeHint');
+            const btn = document.getElementById('translateBtn');
+            const temp = input.value;
+            input.value = output.textContent || '';
+            output.textContent = temp;
+            if (direction === 'ru2xepom') {
+                direction = 'xepom2ru';
+                hint.textContent = 'Введи XEPOM-текст, получи русский';
+                btn.textContent = 'ДЕШИФРОВАТЬ';
+                input.placeholder = 'XEPOM текст...';
+            } else {
+                direction = 'ru2xepom';
+                hint.textContent = 'Введи текст на русском, получи XEPOM';
+                btn.textContent = 'ПЕРЕВЕСТИ';
+                input.placeholder = 'Твой текст...';
+            }
+        }
+
+        function translateText() {
+            const input = document.getElementById('input').value;
+            const chaosLevel = parseInt(document.getElementById('chaosLevel').value);
+            let result;
+            if (direction === 'ru2xepom') {
+                result = translateToXepom(input, chaosLevel);
+            } else {
+                result = deXepomize(input);
+            }
+            document.getElementById('output').textContent = result;
+        }
+
         function copyOutput() {
             const output = document.getElementById('output').textContent;
             if (!output) return alert('Сначала переведи текст.');
             navigator.clipboard.writeText(output).then(() => alert('✅ Текст скопирован!'))
                 .catch(() => alert('❌ Ошибка копирования.'));
         }
+
         function saveOutput() {
             const output = document.getElementById('output').textContent;
             if (!output) return alert('Сначала переведи текст.');
@@ -534,7 +575,13 @@
             a.click();
             URL.revokeObjectURL(a.href);
         }
-        document.getElementById('input').addEventListener('keydown', e => { if (e.ctrlKey && e.key === 'Enter') translateText(); });
+
+        document.getElementById('input').addEventListener('keydown', e => {
+            if (e.ctrlKey && e.key === 'Enter') translateText();
+        });
+
+        // Инициализация отображения хаоса
+        updateChaosLabel();
     </script>
 </body>
 </html>
