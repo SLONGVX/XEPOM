@@ -1,55 +1,540 @@
-/* Группа кнопок */
-.controls {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    margin: 20px 0;
-    flex-wrap: wrap;
-}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>////XEP0M-ПЕРЕВОДЧИК////</title>
+    <style>
+        :root {
+            --bg: #0d001a;
+            --primary: #b300ff;
+            --secondary: #ff00ff;
+            --glow: #cc66ff;
+            --text: #f0e6ff;
+            --text-soft: #d9b3ff;
+        }
 
-/* Основная кнопка ПЕРЕВЕСТИ */
-.btn-main {
-    padding: 18px 40px;
-    font-size: 22px;
-    letter-spacing: 4px;
-    background: var(--primary);
-    color: #000;
-    border: 2px solid var(--secondary);
-    box-shadow: 0 0 30px var(--glow), 0 0 60px var(--secondary), inset 0 0 10px #fff;
-    font-weight: bold;
-    text-shadow: none;
-    border-radius: 8px;
-}
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-.btn-main:hover {
-    background: var(--secondary);
-    box-shadow: 0 0 50px var(--glow), 0 0 80px var(--primary);
-    transform: scale(1.07);
-}
+        body {
+            background: var(--bg);
+            background-image: radial-gradient(circle at 20% 30%, #2b0040 0%, transparent 40%),
+                              radial-gradient(circle at 80% 70%, #4d0099 0%, transparent 50%),
+                              radial-gradient(circle at 50% 100%, #8000ff 0%, transparent 30%);
+            color: var(--text);
+            font-family: 'Courier New', monospace;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+            animation: bgShift 8s ease-in-out infinite alternate;
+        }
 
-/* Компактные вспомогательные кнопки */
-.btn-secondary {
-    padding: 8px 14px;
-    font-size: 14px;
-    letter-spacing: 1px;
-    background: transparent;
-    border: 1px solid var(--primary);
-    color: var(--text-soft);
-    box-shadow: 0 0 10px rgba(179, 0, 255, 0.4);
-    border-radius: 5px;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
+        @keyframes bgShift {
+            0% { background-position: 0% 0%, 100% 100%, 50% 0%; }
+            100% { background-position: 30% 20%, 80% 60%, 50% 30%; }
+        }
 
-.btn-secondary:hover {
-    background: rgba(179, 0, 255, 0.2);
-    box-shadow: 0 0 20px var(--glow);
-    color: #fff;
-}
+        .floating-chaos {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.3;
+            background: repeating-linear-gradient(45deg, #b300ff 0px, #b300ff 2px, transparent 2px, transparent 10px),
+                        repeating-linear-gradient(-45deg, #ff00ff 0px, #ff00ff 2px, transparent 2px, transparent 15px);
+            animation: floatChaos 20s linear infinite;
+        }
 
-/* Иконки внутри кнопок (эмодзи) */
-.btn-secondary .icon {
-    font-size: 16px;
-}
+        @keyframes floatChaos {
+            0% { transform: translateY(0) rotate(0deg); }
+            100% { transform: translateY(-30px) rotate(2deg); }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 850px;
+            background: rgba(10, 0, 30, 0.85);
+            backdrop-filter: blur(12px);
+            border: 2px solid var(--primary);
+            box-shadow: 0 0 30px var(--glow), 0 0 60px var(--secondary), inset 0 0 20px rgba(179, 0, 255, 0.3);
+            padding: 30px;
+            border-radius: 15px;
+            animation: containerGlitch 3s infinite step-end;
+            overflow: visible; /* чтобы шестерёнка не обрезалась */
+        }
+
+        @keyframes containerGlitch {
+            0%, 100% { box-shadow: 0 0 30px var(--glow), 0 0 60px var(--secondary); }
+            5% { box-shadow: 10px 0 40px var(--primary), -5px 0 50px var(--secondary); }
+            6% { box-shadow: 0 0 30px var(--glow), 0 0 60px var(--secondary); }
+            15% { box-shadow: -8px 0 50px var(--primary), 8px 0 30px var(--secondary); }
+            16% { box-shadow: 0 0 30px var(--glow), 0 0 60px var(--secondary); }
+        }
+
+        h1 {
+            font-size: 3rem;
+            text-align: center;
+            color: var(--primary);
+            text-shadow: 0 0 15px var(--secondary), 0 0 40px var(--glow), 3px 3px 0 #000;
+            letter-spacing: 4px;
+            margin-bottom: 10px;
+            animation: headerShake 0.2s infinite alternate, headerFlicker 3s infinite;
+        }
+
+        @keyframes headerShake {
+            0% { transform: translate(0, 0); }
+            25% { transform: translate(-2px, 1px); }
+            75% { transform: translate(2px, -1px); }
+            100% { transform: translate(0, 0); }
+        }
+
+        @keyframes headerFlicker {
+            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
+            20%, 24%, 55% { opacity: 0.4; }
+        }
+
+        textarea, #output {
+            width: 100%;
+            background: #0a001a;
+            border: 1px solid var(--primary);
+            color: var(--text);
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            padding: 15px;
+            margin: 10px 0;
+            resize: vertical;
+            outline: none;
+            transition: all 0.3s;
+            box-shadow: 0 0 15px rgba(179, 0, 255, 0.5), inset 0 0 10px #1a0030;
+        }
+
+        textarea { height: 280px; }
+
+        textarea:focus, #output:focus {
+            border-color: var(--secondary);
+            box-shadow: 0 0 25px var(--glow), inset 0 0 20px var(--primary);
+        }
+
+        #output {
+            min-height: 150px;
+            white-space: pre-wrap;
+            overflow-y: auto;
+            word-break: break-word;
+        }
+
+        /* ====== КНОПКИ ====== */
+        .controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .btn-main {
+            padding: 18px 40px;
+            font-size: 22px;
+            letter-spacing: 4px;
+            background: var(--primary);
+            color: #000;
+            border: 2px solid var(--secondary);
+            box-shadow: 0 0 30px var(--glow), 0 0 60px var(--secondary), inset 0 0 10px #fff;
+            font-weight: bold;
+            text-shadow: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Courier New', monospace;
+        }
+
+        .btn-main:hover {
+            background: var(--secondary);
+            box-shadow: 0 0 50px var(--glow), 0 0 80px var(--primary);
+            transform: scale(1.07);
+        }
+
+        .btn-secondary {
+            padding: 8px 14px;
+            font-size: 14px;
+            letter-spacing: 1px;
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--text-soft);
+            box-shadow: 0 0 10px rgba(179, 0, 255, 0.4);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(179, 0, 255, 0.2);
+            box-shadow: 0 0 20px var(--glow);
+            color: #fff;
+        }
+
+        .btn-secondary .icon { font-size: 16px; }
+
+        /* ====== ШЕСТЕРЁНКА НАСТРОЕК ====== */
+        .settings-icon {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 28px;
+            color: var(--primary);
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.3s;
+            text-shadow: 0 0 10px var(--glow);
+            user-select: none;
+        }
+
+        .settings-icon:hover {
+            color: var(--secondary);
+            transform: rotate(30deg) scale(1.1);
+            text-shadow: 0 0 20px var(--secondary);
+        }
+
+        .settings-panel {
+            display: none;
+            position: absolute;
+            top: 50px;
+            right: 20px;
+            background: rgba(10, 0, 30, 0.95);
+            border: 1px solid var(--primary);
+            box-shadow: 0 0 25px var(--glow);
+            padding: 20px;
+            border-radius: 10px;
+            z-index: 20;
+            min-width: 250px;
+        }
+
+        .settings-panel.active { display: block; }
+
+        .settings-panel label {
+            display: block;
+            margin: 10px 0;
+            color: var(--text-soft);
+        }
+
+        .settings-panel input[type="range"] {
+            accent-color: var(--primary);
+            width: 100%;
+        }
+
+        .settings-panel input[type="number"] {
+            background: #0a001a;
+            border: 1px solid var(--primary);
+            color: var(--text);
+            padding: 5px;
+            width: 70px;
+        }
+
+        a { color: var(--glow); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        /* ====== МОДАЛЬНОЕ ОКНО ПРАВИЛ ====== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-overlay.active { display: flex; }
+
+        .modal-content {
+            background: #12002b;
+            border: 2px solid var(--primary);
+            box-shadow: 0 0 30px var(--glow);
+            max-width: 700px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding: 25px;
+            border-radius: 10px;
+            color: var(--text-soft);
+            font-family: 'Courier New', monospace;
+            line-height: 1.6;
+            position: relative;
+        }
+
+        .modal-content h2 {
+            color: var(--secondary);
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        .modal-content h3 {
+            color: var(--primary);
+            margin-top: 20px;
+            border-bottom: 1px solid #4d0099;
+            padding-bottom: 5px;
+        }
+        .modal-content ul, .modal-content ol { padding-left: 20px; }
+        .modal-content li { margin: 5px 0; }
+        .modal-close {
+            position: absolute;
+            top: 10px; right: 15px;
+            background: transparent;
+            border: none;
+            color: var(--secondary);
+            font-size: 28px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .modal-close:hover { color: #fff; }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 2rem; }
+            .controls { flex-direction: column; align-items: stretch; }
+            .btn-main { width: 100%; text-align: center; }
+            .btn-secondary { width: 100%; justify-content: center; }
+            .settings-panel { right: 10px; left: 10px; min-width: auto; }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-chaos"></div>
+    <div class="container">
+        <!-- иконка-шестерёнка -->
+        <div class="settings-icon" onclick="toggleSettings()" title="Настройки хаоса">⚙️</div>
+        <!-- панель настроек (скрыта) -->
+        <div class="settings-panel" id="settingsPanel">
+            <label>Шанс разделителя (0-1): <input type="range" id="chaosChance" min="0" max="1" step="0.05" value="0.3"></label>
+            <label>Мин. слэшей: <input type="number" id="slashMin" value="5" min="1" max="100"></label>
+            <label>Макс. слэшей: <input type="number" id="slashMax" value="70" min="1" max="200"></label>
+            <button class="btn-secondary" onclick="toggleSettings()" style="margin-top:10px; width:100%;">Закрыть</button>
+        </div>
+
+        <h1>////XEP0M-ПЕРЕВОДЧИК////</h1>
+        <p style="text-align:center; color: #d9b3ff;">Введи или вставь текст (можно многострочный).<br>
+        <small>Для отправки нажми <b>ПЕРЕВЕСТИ</b> или Ctrl+Enter.</small></p>
+        <textarea id="input" placeholder="Твой текст..."></textarea>
+        <div class="controls">
+            <button class="btn-main" onclick="translateText()">ПЕРЕВЕСТИ</button>
+            <button class="btn-secondary" onclick="copyOutput()">
+                <span class="icon">📋</span> Копировать
+            </button>
+            <button class="btn-secondary" onclick="saveOutput()">
+                <span class="icon">💾</span> Сохранить
+            </button>
+            <button class="btn-secondary" onclick="openRules()">
+                <span class="icon">📖</span> Правила
+            </button>
+        </div>
+        <div id="output"></div>
+
+        <hr style="border-color: #4d0099; margin-top: 20px;">
+        <p style="text-align:center; font-size:12px;">XEPOM-переводчик v3.5 LSD. Бюджет: 0 ₽. <a href="https://github.com/SLONGVX/XEPOM" target="_blank">GitHub</a></p>
+    </div>
+
+    <!-- МОДАЛЬНОЕ ОКНО ПРАВИЛ -->
+    <div class="modal-overlay" id="rulesModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeRules()">&times;</button>
+            <h2>📜 ПОЛНЫЙ СВОД ПРАВИЛ ЯЗЫКА XEPOMа</h2>
+            <p style="text-align:center; color:#cc66ff;">(Как он говорит и пишет)</p>
+            <h3>1. Универсальный постфикс «‑СЬЦ» / «‑СЦ»</h3>
+            <ul>
+                <li>После гласной, «й», «ь» → <b>‑СЬЦ</b> <br> <i>ребята → ГРЕБЯТАСЬЦ, делать → ДЕГЛАТЬСЬЦ</i></li>
+                <li>После твёрдой согласной → <b>‑СЦ</b> <br> <i>привет → ПРИГВЕТСЦ, пятёркой → ПЯТЁГКОЙСЦ</i></li>
+                <li>Односложные служебные слова часто получают особые формы: <i>Я → ЯСЬ, И → ИСЬ, С → СС, В → ВВ, НЕ → НЕСЬ, ТЫ → ТЫСЬЦ</i></li>
+                <li>Короткие слова‑исключения: <i>из → ИЗЗЕЦСЦ, дня → ДНЯСАСЬЦ</i></li>
+            </ul>
+            <h3>2. Картавость: Р → Г</h3>
+            <p>«Р» меняется на «Г», если стоит <b>в начале слова или после гласной</b>. <br>
+            <i>привет → ПРИГВЕТ, ребята → ГГЕБЯТА, пятёркой → ПЯТЁГКОЙ</i> <br>
+            После согласной остаётся (отрывки → ОТРЫВКИ). Исключения: ролики → ЛОЛИКИ.</p>
+            <h3>3. Гнусавая вставка «Г»</h3>
+            <p>После гласной <b>перед «л», «ч», «н», «д»</b> вставляется «Г». <br>
+            <i>делать → ДЕГЛАТЬ, понял → ПОГНЯЛ, очень → ОГЧЕНЬ</i></p>
+            <h3>4. Замена «В» после гласной</h3>
+            <p>«В» после гласной превращается в «Г» или «ГВ». <br>
+            <i>новостей → НОГВОСТЕЙ, девственник → ДЕГСТВЕННИК</i></p>
+            <h3>5. Оглушение начального «В»</h3>
+            <p>С вероятностью ~30% начальное «В» становится «Ф». <i>верификация → ФЕРРИВИКАЦИЯ</i></p>
+            <h3>6. Удвоения и разбивка согласных</h3>
+            <ul>
+                <li>Удвоение начальной «О» (~40%): <i>официальный → ООФИЦИАЛЬНЫЙ</i></li>
+                <li>Удвоение первого согласного (редко): <i>чувак → ЧЧУВАК</i></li>
+                <li>Вставка лишнего согласного: <i>держать → ДРЕРЖАТЬ</i></li>
+                <li>Нерегулярные деформации: большой → БЛОЛЬШОЙ, друг → ДУРУГ, пост → ПОСОТ</li>
+            </ul>
+            <h3>7. Лексические замены</h3>
+            <ul>
+                <li>говорить → КУМЕКАТЬ</li>
+                <li>женщина → ВЕДЬМА / БАБА</li>
+                <li>шутка / юмор → ХОХМА</li>
+                <li>плохо (мне) → ДРЯХЛО</li>
+                <li>секс → ИДИЛЛИЯ</li>
+                <li>ругаться → ЧЕРТЫХАТЬСЯ</li>
+                <li>Discord → ДИСКОВОД</li>
+                <li>Моки миоки → МАКИ МАКИ</li>
+                <li>Фрикленд → ФРАКТАЛЬНЫЙ ЛЕНД</li>
+            </ul>
+            <p><b>Прозвища:</b> Пятёрка / 5opka → ГНИЛОЙ БАРАН, ХанОв → КСАНАКС, ktotakops → ЫГЛЫСИК КОТОКОПС</p>
+            <h3>8. Отношение к мату</h3>
+            <p>Полный запрет на корень «ху‑» (заменяется на ДИЧЬ). «Херня» допустимо редко. Разрешённые ругательства: СВОЛОЧЬ, ГОВНЮК, ГНИЛОЙ БАРАН, ВЕДЬМА. Для самочувствия: мне дряхло.</p>
+            <h3>9. Пунктуация</h3>
+            <p>В конце предложений — слэши //// (2–5). Иногда гигантские разделители из десятков слэшей. Обязательный КАПС. Всё пишется ЗАГЛАВНЫМИ БУКВАМИ.</p>
+            <p style="text-align:center; margin-top:20px; color:#b300ff;">–––<br>Создано фанатами XEPOMа на основе реальной речи.</p>
+        </div>
+    </div>
+
+    <script>
+        // Переключение панели настроек
+        function toggleSettings() {
+            document.getElementById('settingsPanel').classList.toggle('active');
+        }
+
+        // Модальное окно правил
+        function openRules() {
+            document.getElementById('rulesModal').classList.add('active');
+        }
+        function closeRules() {
+            document.getElementById('rulesModal').classList.remove('active');
+        }
+        document.getElementById('rulesModal').addEventListener('click', function(e) {
+            if (e.target === this) closeRules();
+        });
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeRules();
+                document.getElementById('settingsPanel').classList.remove('active');
+            }
+        });
+
+        // ==================== ЛОГИКА ПЕРЕВОДЧИКА ====================
+        const LEXICON = {
+            'говорить': 'кумекать', 'разговаривать': 'кумекать', 'болтать': 'кумекать',
+            'женщина': 'ведьма', 'шутка': 'хохма', 'юмор': 'хохма',
+            'плохо': 'дряхло', 'плохой': 'дряхлый', 'сволочь': 'сволочь',
+            'секс': 'идиллия', 'ругаться': 'чертыхаться',
+            'моки миоки': 'маки маки', 'моки': 'маки', 'миоки': 'маки',
+            'фрикленд': 'фрактальный ленд',
+        };
+        const MAT_PATTERNS = [
+            { regex: /\bху[йёяеи]\w*/gi, replacement: 'дичь' },
+            { regex: /\bпизд\w*/gi, replacement: 'дряхлость' },
+            { regex: /\bеба(ть|л|н)\w*/gi, replacement: 'чёрт' },
+            { regex: /\bбля(дь|дская|дство)\w*/gi, replacement: 'блин' },
+        ];
+        const NICKNAMES = {
+            'пятёрка': 'гнилой баран', 'пятёрки': 'гнилой баран', 'пятёрке': 'гнилой баран',
+            'пятёрку': 'гнилой баран', 'пятёркой': 'гнилой баран', 'пятёркою': 'гнилой баран',
+            'пятёрок': 'гнилой баран', 'пятёркам': 'гнилой баран', 'пятёрками': 'гнилой баран',
+            'пятёрках': 'гнилой баран', '5opka': 'гнилой баран', 'кирилл баранов': 'гнилой баран',
+            'ханов': 'ксанакс', 'дискорд': 'дисковод', 'дискорде': 'дисководе',
+            'ктокатопс': 'ыглысик котокопс',
+        };
+        const SERVICE_POSTFIX = {
+            'я': 'ясь', 'и': 'ись', 'с': 'сс', 'в': 'вв', 'к': 'кк',
+            'о': 'ось', 'а': 'ась', 'но': 'нось', 'не': 'несь',
+            'за': 'зась', 'на': 'нась', 'по': 'пось', 'для': 'длясь',
+            'после': 'послесь', 'без': 'безсц', 'из-за': 'иззась',
+            'ты': 'тысьц', 'вы': 'высьц', 'кто': 'ктосьц',
+            'чё': 'чёсц', 'йоу': 'ййоусц', 'да': 'дасьц', 'нет': 'гнетсц',
+        };
+        const SHORT_WORD_BUFFERS = {
+            'из': 'иззец', 'раз': 'раззец', 'дня': 'дняса',
+            'начала': 'начальца', 'конца': 'концаса', 'чате': 'чатец',
+        };
+        const R_EXCEPTIONS = { 'ролики': 'лолики' };
+        const IRREGULAR_DEFORMATIONS = {
+            'большой': 'блольшой', 'пост': 'посот', 'коллегами': 'кололегами',
+            'картонки': 'крартонки', 'друг': 'дуруг',
+        };
+
+        function replaceMat(text) {
+            MAT_PATTERNS.forEach(({regex, replacement}) => { text = text.replace(regex, replacement); });
+            return text;
+        }
+        function applyLexicalReplacements(word) {
+            const lower = word.toLowerCase();
+            if (IRREGULAR_DEFORMATIONS[lower]) return IRREGULAR_DEFORMATIONS[lower];
+            if (NICKNAMES[lower]) return NICKNAMES[lower];
+            if (LEXICON[lower]) return LEXICON[lower];
+            return word;
+        }
+        function applyPhoneticRules(word) {
+            let w = word;
+            if (R_EXCEPTIONS[w.toLowerCase()]) { w = R_EXCEPTIONS[w.toLowerCase()]; }
+            else {
+                w = w.replace(/(?<=[аеёиоуыэюяАЕЁИОУЫЭЮЯ])р/g, 'г');
+                w = w.replace(/\bр/g, 'г');
+            }
+            w = w.replace(/([аеёиоуыэюя])([лчнд])/gi, '$1г$2');
+            if (Math.random() < 0.5) { w = w.replace(/([аеёиоуыэюя])в/gi, '$1г'); }
+            else { w = w.replace(/([аеёиоуыэюя])в/gi, '$1гв'); }
+            if (Math.random() < 0.3) { w = w.replace(/\bв/gi, 'ф'); }
+            if ((w.startsWith('о') || w.startsWith('О')) && Math.random() < 0.4) { w = 'о' + w; }
+            return w;
+        }
+        function addPostfix(word) {
+            const lower = word.toLowerCase();
+            if (SERVICE_POSTFIX[lower]) return SERVICE_POSTFIX[lower];
+            if (SHORT_WORD_BUFFERS[lower]) return SHORT_WORD_BUFFERS[lower] + 'сц';
+            if (/[аеёиоуыэюяйьъ]$/i.test(word)) return word + 'сьц';
+            else return word + 'сц';
+        }
+        function processWord(word) {
+            word = replaceMat(word);
+            word = applyLexicalReplacements(word);
+            word = applyPhoneticRules(word);
+            word = addPostfix(word);
+            return word;
+        }
+        function translateToXepom(text) {
+            const tokens = text.match(/[А-Яа-яёЁ]+|[^А-Яа-яёЁ]+/g) || [];
+            const processed = tokens.map(token => /[А-Яа-яёЁ]/.test(token) ? processWord(token) : token);
+            let translated = processed.join('');
+            const chaosChance = parseFloat(document.getElementById('chaosChance').value);
+            const slashMin = parseInt(document.getElementById('slashMin').value);
+            const slashMax = parseInt(document.getElementById('slashMax').value);
+            translated = translated.replace(/([.!?]+)/g, (match, punct) => {
+                const slashes = '/'.repeat(Math.floor(Math.random() * 4) + 2);
+                if (Math.random() < chaosChance) {
+                    const chaoticLen = Math.floor(Math.random() * (slashMax - slashMin + 1)) + slashMin;
+                    return punct + slashes + '\n\n' + '/'.repeat(chaoticLen) + '\n\n';
+                } else return punct + slashes;
+            });
+            return translated.toUpperCase();
+        }
+        function translateText() {
+            const output = translateToXepom(document.getElementById('input').value);
+            document.getElementById('output').textContent = output;
+        }
+        function copyOutput() {
+            const output = document.getElementById('output').textContent;
+            if (!output) return alert('Сначала переведи текст.');
+            navigator.clipboard.writeText(output).then(() => alert('✅ Текст скопирован!'))
+                .catch(() => alert('❌ Ошибка копирования.'));
+        }
+        function saveOutput() {
+            const output = document.getElementById('output').textContent;
+            if (!output) return alert('Сначала переведи текст.');
+            const blob = new Blob([output], {type: 'text/plain'});
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'xepom_output.txt';
+            a.click();
+            URL.revokeObjectURL(a.href);
+        }
+        document.getElementById('input').addEventListener('keydown', e => { if (e.ctrlKey && e.key === 'Enter') translateText(); });
+    </script>
+</body>
+</html>
